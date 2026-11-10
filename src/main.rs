@@ -1,10 +1,10 @@
 use axum::{
-    Router,
+    Json, Router,
     extract::{Path, Query},
+    http::StatusCode,
     routing::get,
 };
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::env;
 
 #[derive(Serialize, Clone)]
@@ -21,8 +21,26 @@ struct CreateTask {
 
 fn seed_tasks() -> Vec<Task> {
     vec![
-        Task { id: 1, title: "Task 1".to_string(), done: false },
-        Task { id: 2, title: "Task 2".to_string(), done: true },
+        Task {
+            id: 1,
+            title: "Task 1".to_string(),
+            done: false,
+        },
+        Task {
+            id: 2,
+            title: "Task 2".to_string(),
+            done: true,
+        },
+        Task {
+            id: 3,
+            title: "Task 3".to_string(),
+            done: false,
+        },
+        Task {
+            id: 4,
+            title: "Task 4".to_string(),
+            done: true,
+        },
     ]
 }
 
@@ -55,11 +73,8 @@ async fn create_task() -> &'static str {
     "task created"
 }
 
-async fn list_tasks(Query(params): Query<HashMap<String, String>>) -> String {
-    let filter = params
-        .get("done")
-        .map_or("everything".to_string(), |v| format!("done={}", v));
-    format!("list of tasks filtered by {}", filter)
+async fn list_tasks() -> Json<Vec<Task>> {
+    Json(seed_tasks())
 }
 
 async fn get_task(Path(id): Path<u32>) -> String {

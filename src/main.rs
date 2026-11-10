@@ -69,8 +69,14 @@ async fn health() -> &'static str {
     "ok"
 }
 
-async fn create_task() -> &'static str {
-    "task created"
+async fn create_task(Json(payload): Json<CreateTask>) -> (StatusCode, Json<Task>) {
+    let new_task = Task {
+        id: seed_tasks().len() as u32 + 1,
+        title: payload.title,
+        done: false,
+    };
+    // Here you would normally save the new task to a database or in-memory store
+    (StatusCode::CREATED, Json(new_task))
 }
 
 async fn list_tasks() -> Json<Vec<Task>> {

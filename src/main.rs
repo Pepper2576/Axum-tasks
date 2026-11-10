@@ -77,6 +77,11 @@ async fn list_tasks() -> Json<Vec<Task>> {
     Json(seed_tasks())
 }
 
-async fn get_task(Path(id): Path<u32>) -> String {
-    format!("task with id {}", id)
+async fn get_task(Path(id): Path<u32>) -> Result<Json<Task>, StatusCode> {
+    let tasks = seed_tasks();
+    tasks
+        .into_iter()
+        .find(|task| task.id == id)
+        .map(Json)
+        .ok_or(StatusCode::NOT_FOUND)
 }

@@ -5,9 +5,9 @@ use crate::state::AppState;
 
 pub fn app(state: AppState) -> Router {
     Router::new()
-        .route("/", get(root))
-        .route("/health", get(health))
-        .route("/tasks", get(tasks::list_tasks).post(tasks::create_task))
+        .route("/", get(tasks::root))
+        .route("/health", get(tasks::health))
+        .route("/tasks", get(tasks::list_tasks).post(tasks::create))
         .route(
             "/tasks/{id}",
             get(tasks::get_one)

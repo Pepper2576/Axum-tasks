@@ -32,7 +32,7 @@ pub async fn list_tasks(
 
 pub async fn get_one(
   State(state): State<AppState>,
-  Path(id): Path<u64>,
+  Path(id): Path<u32>,
 ) -> Result<Json<Task>, StatusCode> {
   let tasks = state.tasks.lock().unwrap();
   tasks.iter().find(|task| task.id == id).map(|task| Json(task.clone())).ok_or(StatusCode::NOT_FOUND)
@@ -40,7 +40,7 @@ pub async fn get_one(
 
 pub async fn update(
   State(state): State<AppState>,
-  Path(id): Path<u64>,
+  Path(id): Path<u32>,
   Json(payload): Json<UpdateTask>,
 ) -> Result<Json<Task>, StatusCode> {
   let mut tasks = state.tasks.lock().unwrap();
@@ -57,7 +57,7 @@ pub async fn update(
 
 pub async fn delete(
   State(state): State<AppState>,
-  Path(id): Path<u64>,
+  Path(id): Path<u32>,
 ) -> StatusCode {
   let mut tasks = state.tasks.lock().unwrap();
   let before = tasks.len();
@@ -67,4 +67,12 @@ pub async fn delete(
   } else {
     StatusCode::NOT_FOUND
   }
+}
+
+pub async fn health() -> StatusCode {
+  StatusCode::OK
+}
+
+pub async fn root() -> (StatusCode, String) {
+  (StatusCode::OK, "Welcome to Taskr!".to_string())
 }

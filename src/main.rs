@@ -1,5 +1,7 @@
 mod routes;
 mod state;
+mod handlers;
+mod models;
 
 use std::env;
 
